@@ -1,0 +1,35 @@
+kind: pipeline
+type: exec
+name: CI - Container Build - Drone Runner
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: build
+  environment:
+    ALPINE_VERSION: "latest"
+    DRONE_CLI_VERSION: 1.7.0
+    DRONE_RUNNER_EXEC_VERSION: 1.0.0-beta.10
+  commands:
+  - /usr/bin/podman build --build-arg ALPINE_VERSION=$ALPINE_VERSION --build-arg PODMAN_VERSION=$PODMAN_VERSION --build-arg DRONE_SERVER_VERSION=$DRONE_SERVER_VERSION --build-arg DRONE_CLI_VERSION=$DRONE_CLI_VERSION --build-arg DRONE_RUNNER_DOCKER_VERSION=$DRONE_RUNNER_DOCKER_VERSION --build-arg DRONE_RUNNER_EXEC_VERSION=$DRONE_RUNNER_EXEC_VERSION --build-arg DRONE_RUNNER_KUBE_VERSION=$DRONE_RUNNER_KUBE_VERSION --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --format docker --no-cache --tag drone-runner:drone .
+
+- name: publish
+  environment:
+    CONTAINER_NAME: "drone-runner"
+    CONTAINER_VERSION: 1.7.0
+    DOCKERIO_USERNAME:
+      from_secret: username.docker.io
+    DOCKERIO_PASSWORD:
+      from_secret: password.docker.io
+  commands:
+   - /usr/bin/podman tag $CONTAINER_NAME:drone docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:$CONTAINER_VERSION
+   - /usr/bin/podman tag $CONTAINER_NAME:drone docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:latest
+   - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
+   - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:$CONTAINER_VERSION
+   - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:latest
+   
+trigger:
+  branch:
+  - main

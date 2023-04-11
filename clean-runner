@@ -1,0 +1,13 @@
+#!/bin/ash
+
+# Simple script to clean podman for local usage within a drone runner
+
+# TIMEOUT=$1
+# if [ -z $1 ] ; then
+#  TIMEOUT=90
+# fi
+# /usr/bin/killall -q podman
+
+/bin/rm -f /tmp/podman-run-1001/podman/podman.sock
+/usr/bin/podman --log-level fatal system service --time 1 unix:///tmp/podman-run-1001/podman/podman.sock
+/usr/bin/podman rmi --all --force
