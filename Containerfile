@@ -115,7 +115,7 @@ RUN /bin/ln -fsv /mnt/volumes/configmaps/kubectl.cfg /etc/container/kubectl.cfg 
  && /bin/mkdir -p /home/$USER/.kube \
  && /bin/ln -fsv /etc/container/kubectl.cfg /home/$USER/.kube/config
 
-# COPY drone-exports.sh /etc/profile.d/drone-exports.sh
+COPY drone-exports.sh /etc/profile.d/drone-exports.sh
 
 # ╭――――――――――――――――――――╮
 # │ CONTAINER          │
