@@ -114,12 +114,33 @@ RUN /bin/ln -fsv /mnt/volumes/configmaps/kubectl.cfg /etc/container/kubectl.cfg 
  && /bin/ln -fsv /mnt/volumes/container/kubectl.cfg /mnt/volumes/configmaps/kubectl.cfg \
  && /bin/mkdir -p /home/$USER/.kube \
  && /bin/ln -fsv /etc/container/kubectl.cfg /home/$USER/.kube/config
+ 
+ RUN /bin/mkdir -p /home/$USER/.config/ca \
+ && /bin/mkdir -p /home/$USER/.config/git
+
+RUN /bin/ln -fsv /home/$USER/.config/git/gitconfig /home/$USER/.gitconfig \
+ && /bin/ln -fsv /mnt/volumes/configmaps/gitconfig /home/$USER/.config/git/gitconfig \
+ && /bin/ln -fsv /mnt/volumes/container/gitconfig /mnt/volumes/configmaps/gitconfig
+
+RUN /bin/ln -fsv /home/$USER/.config/git/git-credentials /home/$USER/.git-credentials \
+ && /bin/ln -fsv /mnt/volumes/secrets/git-credentials /home/$USER/.config/git/git-credentials \
+ && /bin/ln -fsv /mnt/volumes/container/git-credentials /mnt/volumes/secrets/git-credentials
+
+RUN /bin/ln -fsv /mnt/volumes/configmaps/client-auth.crt /home/$USER/.config/ca/client-auth.crt \
+ && /bin/ln -fsv /mnt/volumes/container/client-auth.crt /mnt/volumes/configmaps/client-auth.crt \
+ && /bin/ln -fsv /home/$USER/.config/ca/client-auth.crt /home/$USER/.config/git/client-auth.crt
+ 
+RUN /bin/ln -fsv /mnt/volumes/configmaps/client-auth.key /home/$USER/.config/ca/client-auth.key \
+ && /bin/ln -fsv /mnt/volumes/container/client-auth.key /mnt/volumes/configmaps/client-auth.key \
+ && /bin/ln -fsv /home/$USER/.config/ca/client-auth.key /home/$USER/.config/git/client-auth.key
+
 
 COPY drone-exports.sh /etc/profile.d/drone-exports.sh
 
 # ╭――――――――――――――――――――╮
 # │ CONTAINER          │
 # ╰――――――――――――――――――――╯
+RUN /bin/chown -R $USER:$USER /home/$USER
 USER $USER
 VOLUME /mnt/volumes/backup
 VOLUME /mnt/volumes/configmaps

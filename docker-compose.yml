@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  runner:
+  drone-runner:
     build:
       args:
         ALPINE_VERSION: "latest"
