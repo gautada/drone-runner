@@ -126,13 +126,13 @@ RUN /bin/ln -fsv /home/$USER/.config/git/git-credentials /home/$USER/.git-creden
  && /bin/ln -fsv /mnt/volumes/secrets/git-credentials /home/$USER/.config/git/git-credentials \
  && /bin/ln -fsv /mnt/volumes/container/git-credentials /mnt/volumes/secrets/git-credentials
 
-RUN /bin/ln -fsv /mnt/volumes/configmaps/client-auth.crt /home/$USER/.config/ca/client-auth.crt \
- && /bin/ln -fsv /mnt/volumes/container/client-auth.crt /mnt/volumes/configmaps/client-auth.crt \
- && /bin/ln -fsv /home/$USER/.config/ca/client-auth.crt /home/$USER/.config/git/client-auth.crt
- 
-RUN /bin/ln -fsv /mnt/volumes/configmaps/client-auth.key /home/$USER/.config/ca/client-auth.key \
- && /bin/ln -fsv /mnt/volumes/container/client-auth.key /mnt/volumes/configmaps/client-auth.key \
- && /bin/ln -fsv /home/$USER/.config/ca/client-auth.key /home/$USER/.config/git/client-auth.key
+RUN /bin/ln -fsv /home/$USER/.config/ca/client-auth.crt /home/$USER/.config/git/client-auth.crt \
+ && /bin/ln -fsv /mnt/volumes/secrets/client-auth.crt /home/$USER/.config/ca/client-auth.crt \
+ && /bin/ln -fsv /mnt/volumes/container/client-auth.crt /mnt/volumes/secrets/client-auth.crt 
+
+RUN /bin/ln -fsv /home/$USER/.config/ca/client-auth.key /home/$USER/.config/git/client-auth.key \
+ && /bin/ln -fsv /mnt/volumes/secrets/client-auth.key /home/$USER/.config/ca/client-auth.key \
+ && /bin/ln -fsv /mnt/volumes/container/client-auth.key /mnt/volumes/secrets/client-auth.key
 
 
 COPY drone-exports.sh /etc/profile.d/drone-exports.sh
