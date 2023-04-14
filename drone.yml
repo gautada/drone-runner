@@ -37,7 +37,7 @@ steps:
   - pwd
   - ls -l
   - ls -l ~/.config/
-  
+  - whoami
 trigger:
   branch:
   - main
