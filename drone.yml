@@ -34,7 +34,6 @@ steps:
   environment:
     CONTAINER_NAME: "drone-runner"
   commands:
-  # /usr/bin/git clone https://git.gautier.org/Cluster/drone-runner-manifest.git manifest
   - pwd
   - ls -l
   - ls -l ~/.config/
