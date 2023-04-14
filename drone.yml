@@ -1,6 +1,6 @@
 kind: pipeline
 type: exec
-name: CI - Container Build - Drone Runner
+name: Drone Runner Container CICD
 
 platform:
   os: linux
@@ -15,7 +15,7 @@ steps:
   commands:
   - /usr/bin/podman build --build-arg ALPINE_VERSION=$ALPINE_VERSION --build-arg PODMAN_VERSION=$PODMAN_VERSION --build-arg DRONE_SERVER_VERSION=$DRONE_SERVER_VERSION --build-arg DRONE_CLI_VERSION=$DRONE_CLI_VERSION --build-arg DRONE_RUNNER_DOCKER_VERSION=$DRONE_RUNNER_DOCKER_VERSION --build-arg DRONE_RUNNER_EXEC_VERSION=$DRONE_RUNNER_EXEC_VERSION --build-arg DRONE_RUNNER_KUBE_VERSION=$DRONE_RUNNER_KUBE_VERSION --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --format docker --no-cache --tag drone-runner:drone .
 
-- name: publish
+- name: integrate
   environment:
     CONTAINER_NAME: "drone-runner"
     CONTAINER_VERSION: 1.7.0
