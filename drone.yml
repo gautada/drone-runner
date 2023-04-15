@@ -7,6 +7,17 @@ platform:
   arch: arm64
 
 steps:
+- name: deploy
+  environment:
+    CONTAINER_NAME: "drone-runner"
+    HOME: "/home/runner"
+  commands:
+  - /bin/ln -svf /mnt/volumes/secrets/git-credentials /home/runner/.git-credentials
+  - /bin/ln -svf /mnt/volumes/configmaps/gitconfig /home/runner/.gitconfig
+  - cat /home/runner/.git-credentials
+  - cat /home/runner/.gitconfig
+  - git clone https://git.gautier.org/Cluster/drone-runner-manifest.git
+
 - name: build
   environment:
     ALPINE_VERSION: "latest"
@@ -30,15 +41,6 @@ steps:
    - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:$CONTAINER_VERSION
    - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:latest
 
-- name: deploy
-  environment:
-    CONTAINER_NAME: "drone-runner"
-  commands:
-  - /bin/ln -svf /mnt/volumes/secrets/git-credentials /home/runner/.git-credentials
-  - /bin/ln -svf /mnt/volumes/configmaps/gitconfig /home/runner/.gitconfig
-  - cat /home/runner/.git-credentials
-  - cat /home/runner/.gitconfig
-  - git clone https://git.gautier.org/Cluster/drone-runner-manifest.git
 trigger:
   branch:
   - main
