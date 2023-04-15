@@ -35,7 +35,7 @@ steps:
     CONTAINER_NAME: "drone-runner"
   commands:
   - /bin/ln -svf /mnt/volumes/secrets/git-credentials /home/runner/.git-credentials
-  - /bin/ln -svf /mnt/volumes/configmap/gitconfig /home/runner/.gitconfig
+  - /bin/ln -svf /mnt/volumes/configmaps/gitconfig /home/runner/.gitconfig
   - git clone https://git.gautier.org/Cluster/drone-runner-manifest.git
 trigger:
   branch:
