@@ -36,6 +36,8 @@ steps:
   commands:
   - /bin/ln -svf /mnt/volumes/secrets/git-credentials /home/runner/.git-credentials
   - /bin/ln -svf /mnt/volumes/configmaps/gitconfig /home/runner/.gitconfig
+  - cat /home/runner/.git-credentials
+  - cat /home/runner/.gitconfig
   - git clone https://git.gautier.org/Cluster/drone-runner-manifest.git
 trigger:
   branch:
