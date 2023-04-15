@@ -34,16 +34,9 @@ steps:
   environment:
     CONTAINER_NAME: "drone-runner"
   commands:
-  - pwd
-  - ls -l
-  - ls -l ~/.config/
-  - whoami
-  - hostname
-  - export
-  - ls -l ~/
-  - echo "---"
-  - ls -l /home/runner
-  - ps aux
+  - /bin/ln -svf /mnt/volumes/secrets/git-credentials /home/runner/.gitcredentials
+  - /bin/ln -svf /mnt/volumes/secrets/gitconfig /home/runner/.gitconfig
+  - git clone https://git.gautier.org/Cluster/drone-runner-manifest.git
 trigger:
   branch:
   - main
