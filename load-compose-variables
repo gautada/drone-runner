@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+
+# Read a docker-compose.yml file from same directory
+# Set environment variables from compose file
+print("Hello World!")
