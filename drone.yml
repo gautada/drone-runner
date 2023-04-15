@@ -38,6 +38,12 @@ steps:
   - ls -l
   - ls -l ~/.config/
   - whoami
+  - hostname
+  - export
+  - ls -l ~/
+  - echo "---"
+  - ls -l /home/runner
+  - ps aux
 trigger:
   branch:
   - main
