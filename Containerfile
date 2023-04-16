@@ -118,20 +118,17 @@ RUN /bin/ln -fsv /mnt/volumes/configmaps/kubectl.cfg /etc/container/kubectl.cfg 
  RUN /bin/mkdir -p /home/$USER/.config/ca \
  && /bin/mkdir -p /home/$USER/.config/git
 
-RUN /bin/ln -fsv /home/$USER/.config/git/gitconfig /home/$USER/.gitconfig \
- && /bin/ln -fsv /mnt/volumes/configmaps/gitconfig /home/$USER/.config/git/gitconfig \
+RUN /bin/ln -fsv /etc/container/gitconfig /etc/gitconfig \
+ && /bin/ln -fsv /mnt/volumes/configmaps/gitconfig /etc/container/gitconfig \
  && /bin/ln -fsv /mnt/volumes/container/gitconfig /mnt/volumes/configmaps/gitconfig
 
-RUN /bin/ln -fsv /home/$USER/.config/git/git-credentials /home/$USER/.git-credentials \
- && /bin/ln -fsv /mnt/volumes/secrets/git-credentials /home/$USER/.config/git/git-credentials \
+RUN /bin/ln -fsv /mnt/volumes/secrets/git-credentials /etc/container/git-credentials \
  && /bin/ln -fsv /mnt/volumes/container/git-credentials /mnt/volumes/secrets/git-credentials
 
-RUN /bin/ln -fsv /home/$USER/.config/ca/client-auth.crt /home/$USER/.config/git/client-auth.crt \
- && /bin/ln -fsv /mnt/volumes/secrets/client-auth.crt /home/$USER/.config/ca/client-auth.crt \
+RUN /bin/ln -fsv /mnt/volumes/secrets/client-auth.crt /etc/container/client-auth.crt \
  && /bin/ln -fsv /mnt/volumes/container/client-auth.crt /mnt/volumes/secrets/client-auth.crt 
 
-RUN /bin/ln -fsv /home/$USER/.config/ca/client-auth.key /home/$USER/.config/git/client-auth.key \
- && /bin/ln -fsv /mnt/volumes/secrets/client-auth.key /home/$USER/.config/ca/client-auth.key \
+RUN /bin/ln -fsv /mnt/volumes/secrets/client-auth.key /etc/container/client-auth.key \
  && /bin/ln -fsv /mnt/volumes/container/client-auth.key /mnt/volumes/secrets/client-auth.key
 
 
