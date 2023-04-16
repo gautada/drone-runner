@@ -7,6 +7,16 @@ platform:
   arch: arm64
 
 steps:
+- name: deploy
+  environment:
+    GIT_USERNAME:
+      from_secret: username.git.gautier.org
+    GIT_PASSWORD:
+      from_secret: password.git.gautier.org
+    CONTAINER_NAME: "drone-runner"
+  commands:
+  - git clone https://$GIT_USERNAME:$GIT_PASSWORD@git.gautier.org/Cluster/drone-runner-manifest.git manifest
+  - ls -l ./manifest
 
 - name: build
   environment:
