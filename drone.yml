@@ -17,6 +17,7 @@ steps:
   - cat /home/runner/.git-credentials
   - cat /home/runner/.gitconfig
   - git clone https://git.gautier.org/Cluster/drone-runner-manifest.git
+  - ls -l
 
 - name: build
   environment:
