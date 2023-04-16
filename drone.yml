@@ -7,16 +7,6 @@ platform:
   arch: arm64
 
 steps:
-- name: deploy
-  environment:
-    GIT_USERNAME:
-      from_secret: username.git.gautier.org
-    GIT_PASSWORD:
-      from_secret: password.git.gautier.org
-    CONTAINER_NAME: "drone-runner"
-  commands:
-  - git clone https://$GIT_USERNAME:$GIT_PASSWORD@git.gautier.org/Cluster/drone-runner-manifest.git manifest
-  - ls -l ./manifest
 
 - name: build
   environment:
@@ -41,6 +31,20 @@ steps:
    - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:$CONTAINER_VERSION
    - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:latest
 
+- name: deploy
+  environment:
+    GIT_USERNAME:
+      from_secret: username.git.gautier.org
+    GIT_PASSWORD:
+      from_secret: password.git.gautier.org
+    CONTAINER_NAME: "drone-runner"
+  commands:
+  - git clone https://$GIT_USERNAME:$GIT_PASSWORD@git.gautier.org/Cluster/drone-runner-manifest.git manifest
+  - /usr/bin/kubectl apply -f manifest/configmap.yml
+  - /usr/bin/kubectl apply -f manifest/ingress.yml
+  - /usr/bin/kubectl apply -f manifest/service.yml
+  - /usr/bin/kubectl apply -f manifest/deployment.yml
+  
 trigger:
   branch:
   - main
