@@ -43,7 +43,7 @@ steps:
   - /usr/bin/kubectl apply -f manifest/configmap.yml
   - /usr/bin/kubectl apply -f manifest/ingress.yml
   - /usr/bin/kubectl apply -f manifest/service.yml
-  - /usr/bin/kubectl apply -f manifest/deployment.yml
+  - /usr/bin/kubectl apply -f manifest/deployment.yml &
   
 trigger:
   branch:
