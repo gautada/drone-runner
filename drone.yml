@@ -40,6 +40,7 @@ steps:
     CONTAINER_NAME: "drone-runner"
   commands:
   - git clone https://$GIT_USERNAME:$GIT_PASSWORD@git.gautier.org/Cluster/drone-runner-manifest.git manifest
+  - /bin/ls -l manifest/
   - /usr/bin/kubectl apply -f manifest/configmap.yml
   - /usr/bin/kubectl apply -f manifest/ingress.yml
   - /usr/bin/kubectl apply -f manifest/service.yml
