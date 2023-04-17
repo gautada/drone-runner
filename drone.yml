@@ -33,6 +33,7 @@ steps:
 
 - name: deploy
   environment:
+    KUBECONFIG: "/mnt/volumes/configmaps/kubeconfig"
     GIT_USERNAME:
       from_secret: username.git.gautier.org
     GIT_PASSWORD:
