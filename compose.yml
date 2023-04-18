@@ -11,9 +11,6 @@ services:
       no_cache: true
       tags:
         - "drone-runner:build"
-        - "docker.io/drone-runner:build"
-        - "docker.io/drone-runner:latest"
-        - "docker.io/drone-runner:1.7.0"
     environment:
       - SYSTEM_ENVIRONMENT=DEVELOPMENT
     hostname: "drone-runner"
@@ -31,11 +28,11 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /Users/mada/Workspace/drone-runner/container-volume
+      device: /Volumes/container
   backup:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /Users/mada/Workspace/drone-runner/backup-volume
+      device: /Volumes/backup
       

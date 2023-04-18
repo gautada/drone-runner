@@ -13,7 +13,7 @@ steps:
 
 - name: test
   commands:
-  - /usr/bin/podman-compose up
+  - /usr/bin/podman-compose run --detach $(/usr/bin/compose-service-name)
   
 - name: integrate
   environment:
@@ -26,7 +26,7 @@ steps:
   commands:
    - /usr/bin/podman tag $CONTAINER_NAME:drone docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:$CONTAINER_VERSION
    - /usr/bin/podman tag $CONTAINER_NAME:drone docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:latest
-   - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
+   -
    - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:$CONTAINER_VERSION
    - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:latest
 
