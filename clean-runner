@@ -8,6 +8,9 @@
 # fi
 # /usr/bin/killall -q podman
 
+/usr/bin/podman rm $(/usr/bin/podman ps -aq)
+/usr/bin/podman volume rm $(/usr/bin/podman volume list -q)
+/usr/bin/podman rmi --all --force
 /bin/rm -f /tmp/podman-run-1001/podman/podman.sock
 /usr/bin/podman --log-level fatal system service --time 1 unix:///tmp/podman-run-1001/podman/podman.sock
-/usr/bin/podman rmi --all --force
+

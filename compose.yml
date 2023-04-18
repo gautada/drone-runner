@@ -10,18 +10,17 @@ services:
       dockerfile: Containerfile
       no_cache: true
       tags:
-        - "drone-runner:dev"
+        - "drone-runner:build"
+        - "docker.io/drone-runner:build"
+        - "docker.io/drone-runner:latest"
+        - "docker.io/drone-runner:1.7.0"
     environment:
-      - SYSTEM_ENVIRONMENT=RELEASE
-      - DRONE_SERVER=https://cilocal.gautier.org
-      - DRONE_TOKEN=cbm8egnrGPJwU3whTt61Gif9V8CpeZYH
-    extra_hosts:
-      - "cilocal.gautier.org:10.0.4.203"
+      - SYSTEM_ENVIRONMENT=DEVELOPMENT
     hostname: "drone-runner"
-    image: "drone-runner:dev"
+    image: "drone-runner:build"
     privileged: true
     ports:
-      - "8080:8080"
+      - "3000:3000"
     volumes:
       - "container:/mnt/volumes/container"
       - "backup:/mnt/volumes/backup"
