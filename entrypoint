@@ -6,10 +6,10 @@
 #             The default template is kept in
 #             [gist](https://gist.github.com/gautada/f185700af585a50b3884ad10c2b02f98)
 
-WETTY_USER="$(/usr/bin/whoami)"
-WETTY_TITLE="RUNNER"
-WETTY_COMMAND="/bin/ash"
-WETTY_PORT="8080"
+# WETTY_USER="$(/usr/bin/whoami)"
+# WETTY_TITLE="RUNNER"
+# WETTY_COMMAND="/bin/ash"
+# WETTY_PORT="8080"
 
 ENTRYPOINT_PARAMS="$@"
 . /etc/profile
@@ -20,27 +20,28 @@ app_version() {
 }
 
 app_entrypoint() {
- # Make the server ssh key on start
- if [ ! -f "/etc/ssh/ssh_host_rsa_key" ] ; then
-  /usr/bin/sudo /usr/bin/ssh-keygen -A -t rsa -N ''
- fi
- # Launch the ssh daemon
- /usr/bin/sudo /usr/sbin/sshd
- # Setup the local ssh keys
- if [ ! -f /home/$WETTY_USER/.ssh/id_rsa ] ; then
-  /bin/mkdir /home/$WETTY_USER/.ssh
-  /bin/chmod 700 /home/$WETTY_USER/.ssh
-  /usr/bin/ssh-keygen -t rsa -N '' -f /home/$WETTY_USER/.ssh/id_rsa
-  /bin/cp /home/$WETTY_USER/.ssh/id_rsa.pub /home/$WETTY_USER/.ssh/authorized_keys
-  /bin/chmod 600 /home/$WETTY_USER/.ssh/authorized_keys
- fi
-/usr/bin/pgrep wetty > /dev/null
-TEST=$?
-if [ $TEST -eq 1 ] ; then
- /home/$WETTY_USER/.yarn/bin/wetty --base / --port $WETTY_PORT --ssh-host localhost --ssh-user $WETTY_USER --ssh-auth publickey \
-   --ssh-key /home/$WETTY_USER/.ssh/id_rsa --force-ssh --title $WETTY_TITLE \
-   --command $WETTY_COMMAND >> /dev/null 2>&1 &
- fi
- /usr/bin/clean-runner
+ # [Issue: Drop WETTY interface in favor of Bastion](https://github.com/gautada/drone-runner-container/issues/29)
+ # # Make the server ssh key on start
+ # if [ ! -f "/etc/ssh/ssh_host_rsa_key" ] ; then
+ #  /usr/bin/sudo /usr/bin/ssh-keygen -A -t rsa -N ''
+ # fi
+ # # Launch the ssh daemon
+ # /usr/bin/sudo /usr/sbin/sshd
+ # # Setup the local ssh keys
+ # if [ ! -f /home/$WETTY_USER/.ssh/id_rsa ] ; then
+ #  /bin/mkdir /home/$WETTY_USER/.ssh
+ #  /bin/chmod 700 /home/$WETTY_USER/.ssh
+ #  /usr/bin/ssh-keygen -t rsa -N '' -f /home/$WETTY_USER/.ssh/id_rsa
+ #  /bin/cp /home/$WETTY_USER/.ssh/id_rsa.pub /home/$WETTY_USER/.ssh/authorized_keys
+ #  /bin/chmod 600 /home/$WETTY_USER/.ssh/authorized_keys
+ # fi
+# /usr/bin/pgrep wetty > /dev/null
+# TEST=$?
+# if [ $TEST -eq 1 ] ; then
+#  /home/$WETTY_USER/.yarn/bin/wetty --base / --port $WETTY_PORT --ssh-host localhost --ssh-user $WETTY_USER --ssh-auth publickey \
+#    --ssh-key /home/$WETTY_USER/.ssh/id_rsa --force-ssh --title $WETTY_TITLE \
+#    --command $WETTY_COMMAND >> /dev/null 2>&1 &
+#  fi
+#  /usr/bin/clean-runner
  drone-runner-exec daemon /etc/container/drone-runner-exec.env
 }

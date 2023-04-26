@@ -3,25 +3,22 @@ services:
   drone-runner:
     build:
       args:
-        ALPINE_VERSION: "latest"
+        ALPINE_VERSION: latest
+        CONTAINER_VERSION: 1.7.0
         DRONE_RUNNER_EXEC_VERSION: 1.0.0-beta.10
         DRONE_CLI_VERSION: 1.7.0
       context: .
       dockerfile: Containerfile
       no_cache: true
       tags:
-        - "drone-runner:dev"
+        - "drone-runner:build"
     environment:
-      - SYSTEM_ENVIRONMENT=RELEASE
-      - DRONE_SERVER=https://cilocal.gautier.org
-      - DRONE_TOKEN=cbm8egnrGPJwU3whTt61Gif9V8CpeZYH
-    extra_hosts:
-      - "cilocal.gautier.org:10.0.4.203"
+      - SYSTEM_ENVIRONMENT=DEVELOPMENT
     hostname: "drone-runner"
-    image: "drone-runner:dev"
+    image: "drone-runner:build"
     privileged: true
     ports:
-      - "8080:8080"
+      - "3000:3000"
     volumes:
       - "container:/mnt/volumes/container"
       - "backup:/mnt/volumes/backup"
@@ -32,11 +29,11 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /Users/mada/Workspace/drone-runner/container-volume
+      device: /Volumes/container
   backup:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /Users/mada/Workspace/drone-runner/backup-volume
+      device: /Volumes/backup
       

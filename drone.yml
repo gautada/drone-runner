@@ -7,15 +7,15 @@ platform:
   arch: arm64
 
 steps:
-
 - name: build
-  environment:
-    ALPINE_VERSION: "latest"
-    DRONE_CLI_VERSION: 1.7.0
-    DRONE_RUNNER_EXEC_VERSION: 1.0.0-beta.10
   commands:
-  - /usr/bin/podman build --build-arg ALPINE_VERSION=$ALPINE_VERSION --build-arg PODMAN_VERSION=$PODMAN_VERSION --build-arg DRONE_SERVER_VERSION=$DRONE_SERVER_VERSION --build-arg DRONE_CLI_VERSION=$DRONE_CLI_VERSION --build-arg DRONE_RUNNER_DOCKER_VERSION=$DRONE_RUNNER_DOCKER_VERSION --build-arg DRONE_RUNNER_EXEC_VERSION=$DRONE_RUNNER_EXEC_VERSION --build-arg DRONE_RUNNER_KUBE_VERSION=$DRONE_RUNNER_KUBE_VERSION --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --format docker --no-cache --tag drone-runner:drone .
+  - /usr/bin/podman-compose build $(/usr/bin/compose-data --name) --no-cache
 
+- name: test
+  commands:
+  # /usr/bin/podman-compose run --detach $(/usr/bin/compose-service-name)
+  - echo $(/usr/bin/compose-data)
+  
 - name: integrate
   environment:
     CONTAINER_NAME: "drone-runner"
@@ -25,11 +25,11 @@ steps:
     DOCKERIO_PASSWORD:
       from_secret: password.docker.io
   commands:
-   - /usr/bin/podman tag $CONTAINER_NAME:drone docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:$CONTAINER_VERSION
-   - /usr/bin/podman tag $CONTAINER_NAME:drone docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:latest
-   - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
-   - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:$CONTAINER_VERSION
-   - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:latest
+  - /usr/bin/podman tag $(/usr/bin/compose-data --name):build docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
+  - /usr/bin/podman tag $(/usr/bin/compose-data --name):build docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):latest
+  - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
+  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$CONTAINER_VERSION
+  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
 
 - name: deploy
   environment:
@@ -40,12 +40,13 @@ steps:
       from_secret: password.git.gautier.org
     CONTAINER_NAME: "drone-runner"
   commands:
-  - git clone https://$GIT_USERNAME:$GIT_PASSWORD@git.gautier.org/Cluster/drone-runner-manifest.git manifest
-  - /bin/ls -l manifest/
-  - /usr/bin/kubectl apply -f manifest/configmap.yml
-  - /usr/bin/kubectl apply -f manifest/ingress.yml
-  - /usr/bin/kubectl apply -f manifest/service.yml
-  - /usr/bin/kubectl apply -f manifest/deployment.yml &
+  - ls -l
+  # - git clone https://$GIT_USERNAME:$GIT_PASSWORD@git.gautier.org/Cluster/drone-runner-manifest.git manifest
+  # - /bin/ls -l manifest/
+  # - /usr/bin/kubectl apply -f manifest/configmap.yml
+  # - /usr/bin/kubectl apply -f manifest/ingress.yml
+  # - /usr/bin/kubectl apply -f manifest/service.yml
+  # - /usr/bin/kubectl apply -f manifest/deployment.yml &
   
 trigger:
   branch:

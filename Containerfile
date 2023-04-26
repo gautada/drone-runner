@@ -91,8 +91,9 @@ RUN /bin/chown -R $USER:$USER /mnt/volumes/container \
 # │ APPLICATION        │
 # ╰――――――――――――――――――――
 RUN /sbin/apk add --no-cache git
-RUN /sbin/apk add --no-cache buildah podman fuse-overlayfs 
-RUN /sbin/apk add --no-cache build-base yarn npm git openssh-client openssh
+RUN /sbin/apk add --no-cache buildah fuse-overlayfs podman py3-pip
+# [Issue: Drop WETTY interface in favor of Bastion](https://github.com/gautada/drone-runner-container/issues/29)
+# RUN /sbin/apk add --no-cache build-base yarn npm git openssh-client openssh
 RUN /sbin/apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing kubectl
 
 RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
@@ -131,8 +132,14 @@ RUN /bin/ln -fsv /mnt/volumes/secrets/client-auth.crt /etc/container/client-auth
 RUN /bin/ln -fsv /mnt/volumes/secrets/client-auth.key /etc/container/client-auth.key \
  && /bin/ln -fsv /mnt/volumes/container/client-auth.key /mnt/volumes/secrets/client-auth.key
 
+RUN /usr/bin/pip3 install podman-compose
 
-COPY drone-exports.sh /etc/profile.d/drone-exports.sh
+RUN mkdir -p /Volumes/container
+RUN mkdir -p /Volumes/backup
+RUN chown $USER:$USER /Volumes/*
+
+# COPY drone-exports.sh /etc/profile.d/drone-exports.sh
+COPY compose-data /usr/bin/compose-data
 
 # ╭――――――――――――――――――――╮
 # │ CONTAINER          │
@@ -142,14 +149,17 @@ USER $USER
 VOLUME /mnt/volumes/backup
 VOLUME /mnt/volumes/configmaps
 VOLUME /mnt/volumes/container
-EXPOSE 8080/tcp
+# # [Issue: Drop WETTY interface in favor of Bastion](https://github.com/gautada/drone-runner-container/issues/29)
+# EXPOSE 8080/tcp
 EXPOSE 3000/tcp
 WORKDIR /home/$USER
 
 # ╭――――――――――――――――――――╮
 # │ CONFIGRE          │
 # ╰――――――――――――――――――――╯
-RUN /usr/bin/yarn global add wetty
+# [Issue: Drop WETTY interface in favor of Bastion](https://github.com/gautada/drone-runner-container/issues/29)
+# RUN /usr/bin/yarn global add wetty
+# Setup UNIX sockert support for podman.
 RUN /bin/mkdir -p /tmp/podman-run-1001/podman
 RUN /usr/bin/podman system connection add sock unix:///tmp/podman-run-1001/podman/podman.sock
 RUN /usr/bin/podman system connection default sock

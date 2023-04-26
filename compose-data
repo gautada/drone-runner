@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+#!/usr/bin/env python
+import argparse
+import yaml
+
+def parse_compose_file():
+    with open('compose.yml', 'r') as f:
+        compose_data = yaml.safe_load(f)
+
+    services = compose_data.get('services', {})
+    assert 1 == len(services), "ERROR: Only one(1) service expected in a container compose file."
+
+    version = "0.0.0"
+    for service_name, service_data in services.items():
+        build_data = service_data.get('build', {})
+        build_args = build_data.get('args', {})
+        assert "CONTAINER_VERSION" in build_args.keys(), "Build arguments must contain 'CONTAINER_VERSION'"
+        version = build_args["CONTAINER_VERSION"]
+    return {"service": service_name, "version": version}
+
+if "__main__" == __name__:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--name', action='store_true', help='Output the service name')
+    parser.add_argument('--version', action='store_true', help='Output the container version')
+    args = parser.parse_args()
+
+    assert not( args.name and args.version), "Must use only one flag"
+    data = parse_compose_file()
+    if args.name:
+        print(data["service"])
+    elif args.version:
+        print(data["version"])
+    else:
+        print(data["service"], data["version"])
+
