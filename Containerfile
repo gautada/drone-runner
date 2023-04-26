@@ -139,6 +139,7 @@ RUN mkdir -p /Volumes/backup
 RUN chown $USER:$USER /Volumes/*
 
 # COPY drone-exports.sh /etc/profile.d/drone-exports.sh
+COPY compose-service /usr/bin/compose-service
 
 # ╭――――――――――――――――――――╮
 # │ CONTAINER          │

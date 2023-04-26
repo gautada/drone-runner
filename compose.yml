@@ -3,7 +3,8 @@ services:
   drone-runner:
     build:
       args:
-        ALPINE_VERSION: "latest"
+        ALPINE_VERSION: latest
+        CONTAINER_VERSION: 1.7.0
         DRONE_RUNNER_EXEC_VERSION: 1.0.0-beta.10
         DRONE_CLI_VERSION: 1.7.0
       context: .
