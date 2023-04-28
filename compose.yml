@@ -15,7 +15,7 @@ services:
     environment:
       - SYSTEM_ENVIRONMENT=DEVELOPMENT
     hostname: "drone-runner"
-    image: "drone-runner:build"
+    image: "gautada/drone-runner:build"
     privileged: true
     ports:
       - "3000:3000"
