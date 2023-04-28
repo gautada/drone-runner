@@ -1,6 +1,6 @@
 kind: pipeline
 type: exec
-name: Drone Runner Container CICD
+name: CICD - Drone Runner Container
 
 platform:
   os: linux
@@ -36,6 +36,9 @@ steps:
   - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
   - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$CONTAINER_VERSION
   - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
+  when:
+    branch:
+    - main
 
 - name: deploy
   environment:
@@ -53,7 +56,11 @@ steps:
   # - /usr/bin/kubectl apply -f manifest/ingress.yml
   # - /usr/bin/kubectl apply -f manifest/service.yml
   # - /usr/bin/kubectl apply -f manifest/deployment.yml &
-  
+  when:
+    branch:
+    - main
+
 trigger:
-  branch:
-  - main
+  event:
+  - push
+  
