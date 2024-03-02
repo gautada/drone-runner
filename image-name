@@ -1,0 +1,9 @@
+#!/bin/sh
+_BASE="$(/usr/bin/basename $(pwd))"
+# echo $_BASE
+
+_NAME="$_BASE"
+if [[ $_BASE == *-container* ]]; then
+	result=${_BASE%-container}
+fi
+echo $_NAME 

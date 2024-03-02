@@ -89,8 +89,9 @@ COPY --from=src /usr/bin/drone-runner-exec /usr/bin/drone-runner-exec
 COPY clean-runner /usr/bin/clean-runner
 # COPY compose-data /usr/bin/compose-data
 # COPY compose-data /usr/bin/compose-data
-COPY build-keys /usr/bin/build-keys
+# COPY build-keys /usr/bin/build-keys
 
+COPY image-build /usr/sbin/image-build
 COPY image-name /usr/sbin/image-name
 COPY image-build-arg /usr/sbin/image-build-arg
 COPY image-publish-tag /usr/sbin/image-publish-tag

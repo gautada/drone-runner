@@ -1,0 +1,14 @@
+#!/bin/ash
+_NAME="${$(/usr/bin/basename $(pwd))%-container}:build"
+
+BUILD_ARGS=""
+if [ -f "./buildargs.conf" ] ; then
+ BUILD_ARGS="--build-arg-file ./buildargs.conf "
+fi
+if [ -f "./.buildargs.conf" ] ; then
+ BUILD_ARGS="$BUILD_ARGS --build-arg-file ./.buildargs.conf"
+fi
+BUILD="/usr/bin/podman build $BUILD_ARGS  --file Containerfile --no-cache --tag '${_NAME}-container}:build' ./"
+
+echo "$BUILD"
+/bin/sh -c "$BUILD"
