@@ -1,2 +1,7 @@
-%wheel         ALL = (ALL) NOPASSWD: /usr/sbin/sshd
-%wheel         ALL = (ALL) NOPASSWD: /usr/bin/ssh-keygen
+# %wheel         ALL = (ALL) NOPASSWD: /usr/sbin/sshd
+# %wheel         ALL = (ALL) NOPASSWD: /usr/bin/ssh-keygen
+
+%privileged ALL = (ALL) NOPASSWD: /usr/sbin/crond
+%privileged ALL = (ALL) NOPASSWD: /usr/bin/container-backup
+%privileged ALL = (ALL) NOPASSWD: /etc/periodic/hourly/container-backup
+
