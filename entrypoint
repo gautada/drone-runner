@@ -43,6 +43,7 @@ app_entrypoint() {
 #    --command $WETTY_COMMAND >> /dev/null 2>&1 &
 #  fi
 #  /usr/bin/clean-runner
- tail -f /dev/null
- # drone-runner-kube daemon /etc/container/drone-runner-kube.env
+#  tail -f /dev/null
+ drone-runner-kube daemon
+#  /etc/container/drone-runner-kube.env
 }

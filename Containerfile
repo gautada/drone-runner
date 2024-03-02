@@ -6,9 +6,10 @@ FROM docker.io/gautada/alpine:$ALPINE_VERSION as src
 # │ VERSION(S)         │
 # ╰――――――――――――――――――――╯
 ARG CONTAINER_VERSION="1.0.0"
-ARG DRONE_RUNNER_KUBE_VERSION="$CONTAINER_VERSION"
-ARG DRONE_RUNNER_KUBE_RELEASE="-rc.3"
-ARG DRONE_RUNNER_KUBE_BRANCH=v"$DRONE_RUNNER_KUBE_VERSION""$DRONE_RUNNER_KUBE_RELEASE"
+ARG DRONE_RUNNER="exec"
+ARG DRONE_RUNNER_VERSION="$CONTAINER_VERSION"
+ARG DRONE_RUNNER_RELEASE="-beta.10"
+ARG DRONE_RUNNER_BRANCH=v"$DRONE_RUNNER_VERSION""$DRONE_RUNNER_RELEASE"
 
 ARG DRONE_CLI_VERSION=1.6.2
 ARG DRONE_CLI_BRANCH=v"$DRONE_CLI_VERSION"
@@ -19,17 +20,19 @@ RUN git config --global advice.detachedHead false
 RUN mkdir -p /usr/lib/go/src/github.com
 WORKDIR /usr/lib/go/src/github.com
 
-RUN echo "$DRONE_RUNNER_KUBE_BRANCH"
-RUN git clone --branch "$DRONE_RUNNER_KUBE_BRANCH" --depth 1 https://github.com/drone-runners/drone-runner-kube.git
+RUN echo "$DRONE_RUNNER_BRANCH -- $DRONE_RUNNER"
+RUN git clone --branch "$DRONE_RUNNER_BRANCH" --depth 1 "https://github.com/drone-runners/drone-runner-$DRONE_RUNNER.git"
 RUN git clone --branch $DRONE_CLI_BRANCH --depth 1 https://github.com/harness/drone-cli.git
 
-WORKDIR /usr/lib/go/src/github.com/drone-runner-kube
-RUN go build -o release/linux/arm64/drone-runner-kube
+WORKDIR /usr/lib/go/src/github.com/drone-runner-$DRONE_RUNNER
+RUN go build -o release/linux/arm64/drone-runner-$DRONE_RUNNER
+RUN /bin/cp -v /usr/lib/go/src/github.com/drone-runner-$DRONE_RUNNER/release/linux/arm64/drone-runner-$DRONE_RUNNER /usr/bin/drone-runner-$DRONE_RUNNER
+
 WORKDIR /usr/lib/go/src/github.com/drone-cli
 # RUN go build -o release/linux/arm64/drone-cli
 # Not sure why CLI is different thant the others
 RUN go install ./...
-
+RUN /bin/cp -v /usr/lib/go/bin/drone /usr/bin/drone
 # ╭――――――――――――――――-------------------------------------------------------――╮
 # │                                                                         │
 # │ STAGE: container                                                        │
@@ -80,13 +83,18 @@ RUN /sbin/apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/e
 # RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
 #  && /usr/sbin/usermod --add-subgids 100000-165535 $USER
 
-COPY --from=src /usr/lib/go/bin/drone /usr/bin/drone
-COPY --from=src /usr/lib/go/src/github.com/drone-runner-kube/release/linux/arm64/drone-runner-kube /usr/bin/drone-runner-kube
+COPY --from=src /usr/bin/drone /usr/bin/drone
+COPY --from=src /usr/bin/drone-runner-exec /usr/bin/drone-runner-exec
  
 COPY clean-runner /usr/bin/clean-runner
 # COPY compose-data /usr/bin/compose-data
 # COPY compose-data /usr/bin/compose-data
 COPY build-keys /usr/bin/build-keys
+
+COPY image-name /usr/sbin/image-name
+COPY image-build-arg /usr/sbin/image-build-arg
+COPY image-publish-tag /usr/sbin/image-publish-tag
+
 
 RUN /bin/ln -fsv /mnt/volumes/configmaps/drone-runner-exec.env /etc/container/drone-runner-exec.env \
  && /bin/ln -fsv /mnt/volumes/container/drone-runner-exec.env /mnt/volumes/configmaps/drone-runner-exec.env

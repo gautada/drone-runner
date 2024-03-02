@@ -9,20 +9,27 @@ platform:
 steps:
 - name: build
   commands:
-  - /usr/bin/podman-compose build $(/usr/bin/compose-data --name) --no-cache
+  - /usr/sbin/container-build
   - /usr/bin/podman images
 
-- name: test
-  commands:
+- name: publish
   environment:
     DOCKERIO_USERNAME:
       from_secret: username.docker.io
     DOCKERIO_PASSWORD:
       from_secret: password.docker.io
+    PUBLISH_REPOSITORY: docker.io
+    IMAGE_NAME: drone-runner
   commands:
-  - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
-  - /usr/bin/podman tag $DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):build docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):test
-  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):test
+  - /usr/bin/podman tag \
+    localhost/$IMAGE_NAME:build \
+    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:test
+  - /usr/bin/podman login \
+    --username=$DOCKERIO_USERNAME \
+    --password=$DOCKERIO_PASSWORD \
+    $PUBLISH_REPOSITORY
+  - /usr/bin/podman push \
+    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:test
   
 - name: integrate
   environment:
@@ -31,37 +38,20 @@ steps:
     DOCKERIO_PASSWORD:
       from_secret: password.docker.io
   commands:
-  - /usr/bin/podman tag $(/usr/bin/compose-data --name):build docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
-  - /usr/bin/podman tag $(/usr/bin/compose-data --name):build docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):latest
-  - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
-  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):latest
-  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
-  #  
-  # - /usr/bin/podman tag $(/usr/bin/compose-data --name):build docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
-  # - /usr/bin/podman tag $(/usr/bin/compose-data --name):build docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):latest
-  # - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
-  # - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$CONTAINER_VERSION
-  # - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
-  when:
-    branch:
-    - main
-
-- name: deploy
-  environment:
-    KUBECONFIG: "/mnt/volumes/configmaps/kubeconfig"
-    GIT_USERNAME:
-      from_secret: username.git.gautier.org
-    GIT_PASSWORD:
-      from_secret: password.git.gautier.org
-    CONTAINER_NAME: "drone-runner"
-  commands:
-  - ls -l
-  # - git clone https://$GIT_USERNAME:$GIT_PASSWORD@git.gautier.org/Cluster/drone-runner-manifest.git manifest
-  # - /bin/ls -l manifest/
-  # - /usr/bin/kubectl apply -f manifest/configmap.yml
-  # - /usr/bin/kubectl apply -f manifest/ingress.yml
-  # - /usr/bin/kubectl apply -f manifest/service.yml
-  # - /usr/bin/kubectl apply -f manifest/deployment.yml &
+  - /usr/bin/podman tag \
+    localhost/$IMAGE_NAME:build \
+    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:1.0.0
+  - /usr/bin/podman tag \
+    localhost/$IMAGE_NAME:build \
+    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:latest
+  - /usr/bin/podman login \
+    --username=$DOCKERIO_USERNAME \
+    --password=$DOCKERIO_PASSWORD \
+    $PUBLISH_REPOSITORY
+  - /usr/bin/podman push \
+    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:1.0.0
+  - /usr/bin/podman push \
+    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:latest
   when:
     branch:
     - main
