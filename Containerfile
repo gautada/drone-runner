@@ -80,8 +80,8 @@ RUN /sbin/apk add --no-cache buildah fuse-overlayfs podman py3-pip
 # RUN /sbin/apk add --no-cache build-base yarn npm git openssh-client openssh
 RUN /sbin/apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing kubectl
 
-# RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
-#  && /usr/sbin/usermod --add-subgids 100000-165535 $USER
+RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
+ && /usr/sbin/usermod --add-subgids 100000-165535 $USER
 
 COPY --from=src /usr/bin/drone /usr/bin/drone
 COPY --from=src /usr/bin/drone-runner-exec /usr/bin/drone-runner-exec
@@ -91,11 +91,17 @@ COPY clean-runner /usr/bin/clean-runner
 # COPY compose-data /usr/bin/compose-data
 # COPY build-keys /usr/bin/build-keys
 
-COPY image-build /usr/sbin/image-build
-COPY image-name /usr/sbin/image-name
-COPY image-build-arg /usr/sbin/image-build-arg
-COPY image-publish-tag /usr/sbin/image-publish-tag
+# COPY image-build /usr/sbin/image-build
+# COPY image-name /usr/sbin/image-name
+# COPY image-build-arg /usr/sbin/image-build-arg
+# COPY image-publish-tag /usr/sbin/image-publish-tag
 
+COPY dotfiles/scripts/image-build /usr/sbin/image-build
+COPY dotfiles/scripts/image-build-arg /usr/sbin/image-build-arg
+COPY dotfiles/scripts/image-name /usr/sbin/image-name
+COPY dotfiles/scripts/image-publish /usr/sbin/image-publish
+COPY dotfiles/scripts/image-tag /usr/sbin/image-tag
+COPY dotfiles/scripts/image-version /usr/sbin/image-version
 
 RUN /bin/ln -fsv /mnt/volumes/configmaps/drone-runner-exec.env /etc/container/drone-runner-exec.env \
  && /bin/ln -fsv /mnt/volumes/container/drone-runner-exec.env /mnt/volumes/configmaps/drone-runner-exec.env
@@ -108,6 +114,7 @@ RUN /bin/ln -fsv /mnt/volumes/configmaps/kubectl.cfg /etc/container/kubectl.cfg 
  && /bin/mkdir -p /home/$USER/.kube \
  && /bin/ln -fsv /etc/container/kubectl.cfg /home/$USER/.kube/config
  
+
 #  RUN /bin/mkdir -p /home/$USER/.config/ca \
 #  && /bin/mkdir -p /home/$USER/.config/git
 
