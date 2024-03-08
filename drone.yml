@@ -12,49 +12,16 @@ steps:
   - /usr/sbin/image-build
   - /usr/bin/podman images
 
-- name: publish
+- name: test
   environment:
     DOCKERIO_USERNAME:
       from_secret: username.docker.io
     DOCKERIO_PASSWORD:
       from_secret: password.docker.io
-    PUBLISH_REPOSITORY: docker.io
-    IMAGE_NAME: drone-runner
   commands:
-  - /usr/bin/podman tag \
-    localhost/$IMAGE_NAME:build \
-    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:test
-  - /usr/bin/podman login \
-    --username=$DOCKERIO_USERNAME \
-    --password=$DOCKERIO_PASSWORD \
-    $PUBLISH_REPOSITORY
-  - /usr/bin/podman push \
-    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:test
+  - image-tag test
+  - image-publish test
   
-- name: integrate
-  environment:
-    DOCKERIO_USERNAME:
-      from_secret: username.docker.io
-    DOCKERIO_PASSWORD:
-      from_secret: password.docker.io
-  commands:
-  - /usr/bin/podman tag \
-    localhost/$IMAGE_NAME:build \
-    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:1.0.0
-  - /usr/bin/podman tag \
-    localhost/$IMAGE_NAME:build \
-    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:latest
-  - /usr/bin/podman login \
-    --username=$DOCKERIO_USERNAME \
-    --password=$DOCKERIO_PASSWORD \
-    $PUBLISH_REPOSITORY
-  - /usr/bin/podman push \
-    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:1.0.0
-  - /usr/bin/podman push \
-    $PUBLISH_REPOSITORY/$DOCKERIO_USERNAME/$IMAGE_NAME:latest
-  when:
-    branch:
-    - main
 
 trigger:
   event:
