@@ -48,5 +48,5 @@ container_entrypoint() {
 #  . /mnt/volumes/configmaps/drone-runner-exec.env
 #  drone-runner-exec daemon
 #  
-drone-runner-exec daemon /etc/container/drone-runner-kube.env
+drone-runner-exec daemon /etc/container/drone-runner-exec.env
 }
