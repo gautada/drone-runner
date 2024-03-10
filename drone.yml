@@ -9,6 +9,7 @@ platform:
 steps:
 - name: build
   commands:
+  - git clone https://github.com/gautada/dotfiles.git dotfiles
   - /usr/sbin/image-build
   - /usr/bin/podman images
 
