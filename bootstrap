@@ -1,0 +1,5 @@
+#!/bin/sh
+
+./dotfiles/scripts/image-build
+./dotfiles/scripts/image-tag test
+./dotfiles/scripts/image-publish test

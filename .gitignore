@@ -19,3 +19,6 @@ manifest/
 # `.dockerignore` file allows you to specify a list of files or directories 
 # that Docker is to ignore during the build process.
 .dockerignore
+.envs.conf
+.nova
+dotfiles

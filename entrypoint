@@ -14,12 +14,13 @@
 ENTRYPOINT_PARAMS="$@"
 . /etc/profile
 
-app_version() {
- . /mnt/volumes/configmap/server.env
- echo $DRONE_SERVER_VERSION
+container_version() {
+ # . /mnt/volumes/configmap/server.env
+ # echo $DRONE_SERVER_VERSION
+ echo "1.0.0"
 }
 
-app_entrypoint() {
+container_entrypoint() {
  # [Issue: Drop WETTY interface in favor of Bastion](https://github.com/gautada/drone-runner-container/issues/29)
  # # Make the server ssh key on start
  # if [ ! -f "/etc/ssh/ssh_host_rsa_key" ] ; then
@@ -43,5 +44,9 @@ app_entrypoint() {
 #    --command $WETTY_COMMAND >> /dev/null 2>&1 &
 #  fi
 #  /usr/bin/clean-runner
- drone-runner-exec daemon /etc/container/drone-runner-exec.env
+# tail -f /dev/null
+#  . /mnt/volumes/configmaps/drone-runner-exec.env
+#  drone-runner-exec daemon
+#  
+drone-runner-exec daemon /etc/container/drone-runner-exec.env
 }
