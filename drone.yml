@@ -1,6 +1,6 @@
 kind: pipeline
 type: exec
-name: CICD - Drone Runner Container
+name: CICD - Container Build
 
 platform:
   os: linux
@@ -13,7 +13,7 @@ steps:
   - /usr/sbin/image-build
   - /usr/bin/podman images
 
-- name: test
+- name: publish(test)
   environment:
     DOCKERIO_USERNAME:
       from_secret: username.docker.io
