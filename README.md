@@ -5,8 +5,6 @@ A configurable drone runner that uses the **exec** runner for ci builds
 https://github.com/drone-runners/
 https://github.com/harness/harness-docker-runner
 
-FF
-
 ## Development
 
 Environment variables must be set for the runner to function properly.  These should be set as environment variables in the **deployment.yml** manifest.
