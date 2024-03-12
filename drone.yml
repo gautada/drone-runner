@@ -21,6 +21,7 @@ steps:
       from_secret: password.docker.io
   commands:
   - pwd
+  - ./dotfiles/scripts/image-name
   - ./dotfiles/scripts/image-tag test
   - ./dotfiles/scripts/image-publish test
   
