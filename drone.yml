@@ -20,8 +20,9 @@ steps:
     DOCKERIO_PASSWORD:
       from_secret: password.docker.io
   commands:
-  - image-tag test
-  - image-publish test
+  - 
+  - /dotfiles/scripts/image-tag test
+  - /dotfiles/scripts/image-publish test
   
 
 trigger:
