@@ -10,7 +10,7 @@ steps:
 - name: build
   commands:
   - git clone https://github.com/gautada/dotfiles.git dotfiles
-  - /usr/sbin/image-build
+  - ./dotfiles/scripts/image-build
   - /usr/bin/podman images
 
 - name: publish(test)
@@ -20,8 +20,10 @@ steps:
     DOCKERIO_PASSWORD:
       from_secret: password.docker.io
   commands:
-  - image-tag test
-  - image-publish test
+  - pwd
+  - ./dotfiles/scripts/image-name
+  - ./dotfiles/scripts/image-tag test
+  - ./dotfiles/scripts/image-publish test
   
 
 trigger:
