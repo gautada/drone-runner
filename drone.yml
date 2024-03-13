@@ -24,7 +24,24 @@ steps:
   - ./dotfiles/scripts/image-name
   - ./dotfiles/scripts/image-tag test
   - ./dotfiles/scripts/image-publish test
-  
+
+- name: integrate
+  environment:
+    DOCKERIO_USERNAME:
+      from_secret: username.docker.io
+    DOCKERIO_PASSWORD:
+      from_secret: password.docker.io
+    PUBLISH_REPOSITORY:
+      value: docker.io
+  commands:
+  - echo "$(./dotfiles/scripts/image-version)"
+  - ./dotfiles/scripts/image-tag "$(./dotfiles/scripts/image-version)"
+  - ./dotfiles/scripts/image-publish "$(./dotfiles/scripts/image-version)"
+  - ./dotfiles/scripts/image-tag latest
+  - ./dotfiles/scripts/image-publish latest
+  when:
+    branch:
+    - main  
 
 trigger:
   event:
