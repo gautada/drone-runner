@@ -17,8 +17,16 @@
 manifest/
 
 # `.dockerignore` file allows you to specify a list of files or directories 
-# that Docker is to ignore during the build process.
+# that Docker is to ignore during the build process. To create jusr
+# symlink to this files `ln -s .gitignore .dockerignore`
 .dockerignore
-.envs.conf
-.nova
-dotfiles
+
+.env
+.flake8
+.hadolint.yaml
+.htmlhintrc
+.jscpd.json
+.markdownlint.yaml
+.pre-commit-config.yaml
+.sqlfluff
+.yamllint.yaml
